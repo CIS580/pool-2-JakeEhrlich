@@ -9,7 +9,7 @@ var canvas = document.getElementById('screen');
 var game = new Game(canvas, update, render);
 var image = new Image();
 image.src = 'assets/pool_balls.png';
-
+var axisList = [];
 var pockets = [
   {x: 0, y: 0},
   {x: 512, y: 0},
@@ -20,7 +20,7 @@ var pockets = [
 ]
 var stick = {x: 0, y: 0, power: 0, charge: false}
 var balls = []
-for(var i = 0; i < 18; i++){
+for(var i = 0; i < 16; i++){
   balls.push({
     position: {x: 0, y: 0},
     angle: 0,
@@ -28,7 +28,9 @@ for(var i = 0; i < 18; i++){
     color: 'gray',
     pocketed: false
   });
+  axisList.push(balls[i]);
 }
+axisList.sort(function(a, b){return a.position.x - b.position.y;})
 rack();
 
 /**
@@ -175,6 +177,25 @@ function update(elapsedTime) {
   });
 
   // check for ball collisions
+  axisList.sort(function(a, b){ return a.position.x - b.position.x});
+  var active = [];
+  var pot = [];
+  axisList.forEach(function(ball) {
+    active = active.filter(function(oball) {
+      return ball.position.x - oball.position.x < 30;
+    });
+    active.forEach(function(oball){pot.push({a : oball, b : ball})});
+    active.push(ball);
+  });
+
+  console.log("pot", pot);
+
+  //Second pass - check for actual collision
+  var collisions = [];
+  pot.forEach(function() {
+    
+  });
+
   // TODO: Check for ball collisions
   // TODO: Process ball collisions
 }
